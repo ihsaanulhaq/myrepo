@@ -39,3 +39,18 @@ else
 fi
 
 
+echo milestone-2.....
+
+ovs-vsctl del-br mybr1
+ovs-vsctl add-br mybr1 -- set Bridge mybr1 fail-mode=secure
+ovs-vsctl add-port mybr1 ens5
+ovs-ofctl add-flow mybr1 "in_port=1,ip,nw_src=192.168.10.191,actions=drop"
+#ovs-ofctl dump-tables-desc mybr1
+
+for ((i=1; i<=100; i++))
+do
+  ovs-ofctl add-flow mybr1 "in_port=1,ip,nw_src=192.168.10.$i,actions=drop"
+  #echo rule-$i installed...
+done
+ovs-ofctl dump-flows mybr1
+echo Execution finished....
